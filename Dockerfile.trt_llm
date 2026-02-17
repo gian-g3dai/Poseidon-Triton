@@ -1,0 +1,27 @@
+# start with the cuda docker image
+FROM nvcr.io/nvidia/cuda:12.3.1-devel-ubuntu22.04
+
+# install dependencies
+RUN apt-get update && apt-get -y install python3.10 python3-pip openmpi-bin libopenmpi-dev wget
+
+RUN rm -rf /var/lib/apt/lists/*
+
+ARG TRT_LLM_RELEASE="0.7.0"
+
+RUN pip3 install tensorrt_llm==${TRT_LLM_RELEASE} -U --pre --extra-index-url https://pypi.nvidia.com
+
+WORKDIR /scripts_trt
+
+# Download the correct release source code (they dont use branches for versioning, they just make a zip under releases)
+RUN wget https://github.com/NVIDIA/TensorRT-LLM/archive/refs/tags/v${TRT_LLM_RELEASE}.tar.gz -O TensorRT-LLM.tar.gz
+# extract the utils.py, run.py and build.py files from the release
+RUN tar -xzf TensorRT-LLM.tar.gz --strip-components=1 \
+    TensorRT-LLM-${TRT_LLM_RELEASE}/examples/llama/build.py \
+    TensorRT-LLM-${TRT_LLM_RELEASE}/examples/llama/weight.py \
+    TensorRT-LLM-${TRT_LLM_RELEASE}/examples/run.py \
+    TensorRT-LLM-${TRT_LLM_RELEASE}/examples/utils.py
+
+# RUN rm TensorRT-LLM.tar.gz
+
+# can test with CMD python3 -c "import tensorrt_llm; print(tensorrt_llm.__version__)"
+ENTRYPOINT ["python3", "/scripts_trt/examples/llama/build.py"]
