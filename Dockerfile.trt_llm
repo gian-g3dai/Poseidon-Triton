@@ -19,9 +19,8 @@ RUN tar -xzf TensorRT-LLM.tar.gz --strip-components=1 \
     TensorRT-LLM-${TRT_LLM_RELEASE}/examples/llama/build.py \
     TensorRT-LLM-${TRT_LLM_RELEASE}/examples/llama/weight.py \
     TensorRT-LLM-${TRT_LLM_RELEASE}/examples/run.py \
-    TensorRT-LLM-${TRT_LLM_RELEASE}/examples/utils.py
-
-# RUN rm TensorRT-LLM.tar.gz
+    TensorRT-LLM-${TRT_LLM_RELEASE}/examples/utils.py && \
+    rm TensorRT-LLM.tar.gz
 
 # can test with CMD python3 -c "import tensorrt_llm; print(tensorrt_llm.__version__)"
 ENTRYPOINT ["python3", "/scripts_trt/examples/llama/build.py"]
