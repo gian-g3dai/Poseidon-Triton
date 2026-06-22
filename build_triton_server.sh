@@ -35,6 +35,7 @@ if [ -d $TRT_LLM_FOLDER ]; then
     fi
 fi
 
+mkdir -p tmp
 cd tmp
 
 git clone https://github.com/triton-inference-server/tensorrtllm_backend.git -b $TRT_LLM_BACKEND_VERSION
@@ -65,7 +66,7 @@ git lfs install
 git submodule update --init --recursive
 
 # check if the docker image is already built
-if docker inspect "$image_name:$tag" &> /dev/null; then
+if docker inspect "$TRT_LLM_DOCKER_IMAGE_NAME:latest" &> /dev/null; then
   # ask the user if they want to rebuild the image
   read -p "The docker image $TRT_LLM_DOCKER_IMAGE_NAME already exists. Do you want to rebuild it? (y/n) " -n 1 -r
   echo

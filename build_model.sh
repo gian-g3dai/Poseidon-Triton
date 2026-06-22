@@ -17,6 +17,7 @@ is_package_installed() {
 
 if ! is_package_installed "nvidia-container-toolkit"; then
   echo "Please install nvidia-container-toolkit to use gpu accelerated containers!"
+  exit 1
 fi
 
 # Check if at least two arguments are provided
@@ -51,8 +52,7 @@ docker run --gpus $GPUS --rm -v ./models:/models $BUILDER_IMG_NAME \
   --max_batch_size "8" \
   --max_input_len 32256 \
   --max_output_len 16384 \
-  --max_num_tokens 16384 \
-  --enable_context_fmha
+  --max_num_tokens 16384
   # --enable_pos_shift
 
   # somehow increasing max_num_tokens fixed the silent deadlock?
